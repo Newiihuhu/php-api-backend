@@ -12,23 +12,20 @@ $query = "SELECT d.DEVICENAME, d.FAVORITE, d.LOCATIONINITIAL, COUNT(d.LOCATIONIN
 $result = $DATABASE->query($query);
 $result2 = $DATABASE->query($query);
 $row = $result->fetch_assoc();
-$data = '{
+$first_data = '
     "id": "' . $row['DEVICENAME'] . '",
     "favorite": "' . $row["FAVORITE"] . '",
     "description":  "' . $row['DEVICENAME'] . '",
     "accession": " ",
-    "location": [';
+    "location": ';
 
+$second_data = "";
 while ($row2 = $result2->fetch_array()) {
-    $data .= '
-            {
+    $second_data .= '{
                 "shortName": "' . $row2['LOCATIONINITIAL'] . '",
                 "locationName": "' . $row2['THNAME'] . '",
                 "count": "' . $row2['COUNTLOCATION'] . '"
-            },
-    ';
+            },';
 }
 
-echo $data . '
-    ]
-}';
+echo '{' . $first_data . '[' . substr($second_data, 0, -1) . ']' . '}';

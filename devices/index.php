@@ -13,8 +13,8 @@ while ($row = $result->fetch_array()) {
         "id": "' . $row['DEVICENAME'] . '",
         "image": "' . $row["IMAGE"] . '",
         "favorite": "' . $row["FAVORITE"] . '",
-        "totalAvailable": "' . $row["TOTALAVAILABLE"] . '",
+        "totalAvailable": "' . $row["TOTALAVAILABLE"] . '"
     },';
 }
 
-echo '[' . $data . ']';
+echo '[' . substr($data, 0, -1) . ']';
