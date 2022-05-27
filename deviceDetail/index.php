@@ -7,7 +7,8 @@ $query = "SELECT d.DEVICENAME, d.FAVORITE, d.LOCATIONINITIAL, COUNT(d.LOCATIONIN
             INNER JOIN `location_name` as ln 
             ON d.LOCATIONINITIAL = ln.SHORTNAME 
             WHERE d.DEVICENAME = '" . $device_name . "' AND d.ITEMSTATUSNAME = 'Available' 
-            GROUP BY d.LOCATIONINITIAL";
+            GROUP BY d.LOCATIONINITIAL 
+            ORDER BY ln.THNAME ASC";
 
 $result = $DATABASE->query($query);
 $result2 = $DATABASE->query($query);
@@ -20,12 +21,23 @@ $first_data = '
     "location": ';
 
 $second_data = "";
+$third_data = "";
 while ($row2 = $result2->fetch_array()) {
-    $second_data .= '{
+    if ($row2['THNAME'] == "หอสมุดกลาง") {
+        $second_data .= '{
                 "shortName": "' . $row2['LOCATIONINITIAL'] . '",
                 "locationName": "' . $row2['THNAME'] . '",
                 "count": "' . $row2['COUNTLOCATION'] . '"
             },';
+    }
+    if ($row2['THNAME'] !== "หอสมุดกลาง") {
+        $third_data .= '{
+                "shortName": "' . $row2['LOCATIONINITIAL'] . '",
+                "locationName": "' . $row2['THNAME'] . '",
+                "count": "' . $row2['COUNTLOCATION'] . '"
+            },';
+    }
 }
 
-echo '{' . $first_data . '[' . substr($second_data, 0, -1) . ']' . '}';
+
+echo '{' . $first_data . '[' . $second_data . substr($third_data, 0, -1) . ']' . '}';
