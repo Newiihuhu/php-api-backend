@@ -38,6 +38,7 @@ for ($i = 0; $i < count($json_chromebook->ItemInfo); $i++) {
     $query = "INSERT INTO `devices`
     (
      `FAVORITE`,
+     `UNLOCKDEVICE`,
      `IMAGE`,
      `DEVICENAME`,
      `ACCESSIONNO`,
@@ -50,6 +51,7 @@ for ($i = 0; $i < count($json_chromebook->ItemInfo); $i++) {
      `LOCATIONINITIAL`,
      `UNIT`) 
     VALUES (
+        0,
     0,
     'assets/images/trueChrome.png',
     'Chromebook',
@@ -72,7 +74,8 @@ for ($i = 0; $i < count($json_chromebook->ItemInfo); $i++) {
 for ($i = 0; $i < count($json_lenovo->ItemInfo); $i++) {
     $query = "INSERT INTO `devices`
     (
-     `FAVORITE`,
+        `FAVORITE`,
+     `UNLOCKDEVICE`,
      `IMAGE`,
      `DEVICENAME`,
      `ACCESSIONNO`,
@@ -85,6 +88,7 @@ for ($i = 0; $i < count($json_lenovo->ItemInfo); $i++) {
      `LOCATIONINITIAL`,
      `UNIT`) 
     VALUES (
+    0,
     0,
     'assets/images/v14.jpg',
     'Notebook Lenovo V14',
@@ -107,7 +111,8 @@ for ($i = 0; $i < count($json_lenovo->ItemInfo); $i++) {
 for ($i = 0; $i < count($json_apple->ItemInfo); $i++) {
     $query = "INSERT INTO `devices`
     (
-     `FAVORITE`,
+        `FAVORITE`,
+     `UNLOCKDEVICE`,
      `IMAGE`,
      `DEVICENAME`,
      `ACCESSIONNO`,
@@ -120,6 +125,7 @@ for ($i = 0; $i < count($json_apple->ItemInfo); $i++) {
      `LOCATIONINITIAL`,
      `UNIT`) 
     VALUES (
+    0,
     0,
     'assets/images/applePen.png',
     'Apple Pencil gen 1',
