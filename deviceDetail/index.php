@@ -1,11 +1,14 @@
 <?php
+header('Content-Type: application/json ; charset=utf-8');
 require("../database.php");
 $device_name = isset($_GET['device']) ? $_GET['device'] : '';
 
-$query = "SELECT d.DEVICENAME, d.FAVORITE, d.LOCATIONINITIAL, COUNT(d.LOCATIONINITIAL) as COUNTLOCATION, ln.THNAME 
+$query = "SELECT d.DEVICENAME, d.FAVORITE, d.LOCATIONINITIAL, COUNT(d.LOCATIONINITIAL) as COUNTLOCATION, ln.THNAME, da.DURATION, da.ACCESSION 
             FROM `devices` as d 
             INNER JOIN `location_name` as ln 
             ON d.LOCATIONINITIAL = ln.SHORTNAME 
+            INNER JOIN `devices_on_app` as da
+            ON d.DEVICENAME = da.DEVICENAME
             WHERE d.DEVICENAME = '" . $device_name . "' AND d.ITEMSTATUSNAME = 'Available' 
             GROUP BY d.LOCATIONINITIAL 
             ORDER BY ln.THNAME ASC";
@@ -17,7 +20,8 @@ $first_data = '
     "id": "' . $row['DEVICENAME'] . '",
     "favorite": "' . $row["FAVORITE"] . '",
     "description":  "' . $row['DEVICENAME'] . '",
-    "accession": " ",
+    "accession": "' . $row['ACCESSION'] . '",
+    "duration": "' . $row["DURATION"] . '",
     "location": ';
 
 $second_data = "";

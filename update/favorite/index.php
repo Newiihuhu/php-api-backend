@@ -1,4 +1,5 @@
 <?php
+header('Content-Type: application/json');
 require("../../database.php");
 $device_name = isset($_GET['device']) ? $_GET['device'] : '';
 $favorite = isset($_GET['favorite']) ? $_GET['favorite'] : '';

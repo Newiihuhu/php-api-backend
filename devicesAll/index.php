@@ -2,21 +2,22 @@
 header('Content-Type: application/json ; charset=utf-8');
 require("../database.php");
 
-$query = 'SELECT d.DEVICENAME, d.FAVORITE, da.DURATION, d.IMAGE, COUNT(d.ITEMSTATUSNAME) as TOTALAVAILABLE 
+$query = 'SELECT da.DURATION as DURATION, d.IMAGE as IMAGE, da.BIBID as BIBID, da.ACCESSION as ACCESSION, da.DEVICENAME as DEVICENAME, da.UNLOCKDEVICE as UNLOCKDEVICE
             FROM `devices` as d 
             INNER JOIN `devices_on_app` as da
             ON d.DEVICENAME = da.DEVICENAME
-            WHERE d.ITEMSTATUSNAME = "Available" AND da.UNLOCKDEVICE = "1"
-            GROUP BY d.DEVICENAME';
+            WHERE `ITEMSTATUSNAME` = "Available"
+            GROUP BY `DEVICENAME`';
 $result = $DATABASE->query($query);
 $data = "";
 while ($row = $result->fetch_array()) {
     $data .= '{
-        "id": "' . $row['DEVICENAME'] . '",
+        "bib_id": "' . $row['BIBID'] . '",
+        "device_name": "' . $row["DEVICENAME"] . '",
         "image": "' . $row["IMAGE"] . '",
-        "favorite": "' . $row["FAVORITE"] . '",
+        "accession": "' . $row["ACCESSION"] . '",
         "duration": "' . $row["DURATION"] . '",
-        "totalAvailable": "' . $row["TOTALAVAILABLE"] . '"
+        "unlock": "' . $row["UNLOCKDEVICE"] . '"
     },';
 }
 

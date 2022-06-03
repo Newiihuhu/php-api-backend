@@ -1,10 +1,6 @@
 <?php
 require("../database.php");
 
-$url_chromebook = "https://opac.kku.ac.th/v2/api/GetItem/b00393863";
-$url_lenovo = "https://opac.kku.ac.th/v2/api/GetItem/b00463692";
-$url_apple = "https://opac.kku.ac.th/v2/api/GetItem/b00462843";
-
 function get_data($url)
 {
     $curl = curl_init($url);
@@ -22,23 +18,24 @@ function get_data($url)
     curl_close($curl);
     return $resp;
 }
-$resp_chromebook = get_data($url_chromebook);
-$resp_lenovo = get_data($url_lenovo);
-$resp_apple = get_data($url_apple);
-
-$json_chromebook = json_decode($resp_chromebook);
-$json_lenovo = json_decode($resp_lenovo);
-$json_apple = json_decode($resp_apple);
-$query = "";
 
 $clear = "DELETE FROM `devices`";
 $clear_result = $DATABASE->query($clear);
+$get_bib_id_and_name = "SELECT * FROM `devices_on_app`";
+$result = $DATABASE->query($get_bib_id_and_name);
+while ($row = $result->fetch_array()) {
+    $url = "https://opac.kku.ac.th/v2/api/GetItem/" . $row['BIBID'];
+    $url_image = "https://opac.kku.ac.th/v2/api/GetBookCover/" . $row['BIBID'];
+    $response = get_data($url);
+    $response_image = get_data($url_image);
+    $json = json_decode($response);
+    $json_image = json_decode($response_image);
 
-for ($i = 0; $i < count($json_chromebook->ItemInfo); $i++) {
-    $query = "INSERT INTO `devices`
+    for ($i = 0; $i < count($json->ItemInfo); $i++) {
+        $query = "INSERT INTO `devices`
     (
+        `BIBID`,
      `FAVORITE`,
-     `UNLOCKDEVICE`,
      `IMAGE`,
      `DEVICENAME`,
      `ACCESSIONNO`,
@@ -51,101 +48,24 @@ for ($i = 0; $i < count($json_chromebook->ItemInfo); $i++) {
      `LOCATIONINITIAL`,
      `UNIT`) 
     VALUES (
-        0,
+        '" . $row['BIBID'] . "',
     0,
-    'assets/images/trueChrome.png',
-    'Chromebook',
-    '" . $json_chromebook->ItemInfo[$i]->ACCESSIONNO . "',
-    '" . $json_chromebook->ItemInfo[$i]->BARCODE . "',
-    '" . $json_chromebook->ItemInfo[$i]->CALLNO . "',
-    '" . $json_chromebook->ItemInfo[$i]->COLLECTIONNAME . "',
-    '" . $json_chromebook->ItemInfo[$i]->COPY . "',
-    '" . $json_chromebook->ItemInfo[$i]->ITEMCLASSNAME . "',
-    '" . $json_chromebook->ItemInfo[$i]->ITEMSTATUSNAME . "',
-    '" . $json_chromebook->ItemInfo[$i]->LOCATIONINITIAL . "',
-    '" . $json_chromebook->ItemInfo[$i]->UNIT . "')";
-    if ($DATABASE->query($query) === FALSE) {
-        echo '{
+    '" . $json_image . "',
+    '" . $row['DEVICENAME'] . "',
+    '" . $json->ItemInfo[$i]->ACCESSIONNO . "',
+    '" . $json->ItemInfo[$i]->BARCODE . "',
+    '" . $json->ItemInfo[$i]->CALLNO . "',
+    '" . $json->ItemInfo[$i]->COLLECTIONNAME . "',
+    '" . $json->ItemInfo[$i]->COPY . "',
+    '" . $json->ItemInfo[$i]->ITEMCLASSNAME . "',
+    '" . $json->ItemInfo[$i]->ITEMSTATUSNAME . "',
+    '" . $json->ItemInfo[$i]->LOCATIONINITIAL . "',
+    '" . $json->ItemInfo[$i]->UNIT . "')";
+        if ($DATABASE->query($query) === FALSE) {
+            echo '{
             "status": "error"
         }';
-        exit;
+            exit;
+        }
     }
 }
-for ($i = 0; $i < count($json_lenovo->ItemInfo); $i++) {
-    $query = "INSERT INTO `devices`
-    (
-        `FAVORITE`,
-     `UNLOCKDEVICE`,
-     `IMAGE`,
-     `DEVICENAME`,
-     `ACCESSIONNO`,
-     `BARCODE`,
-     `CALLNO`,
-     `COLLECTIONNAME`,
-     `COPY`,
-     `ITEMCLASSNAME`,
-     `ITEMSTATUSNAME`,
-     `LOCATIONINITIAL`,
-     `UNIT`) 
-    VALUES (
-    0,
-    0,
-    'assets/images/v14.jpg',
-    'Notebook Lenovo V14',
-    '" . $json_lenovo->ItemInfo[$i]->ACCESSIONNO . "',
-    '" . $json_lenovo->ItemInfo[$i]->BARCODE . "',
-    '" . $json_lenovo->ItemInfo[$i]->CALLNO . "',
-    '" . $json_lenovo->ItemInfo[$i]->COLLECTIONNAME . "',
-    '" . $json_lenovo->ItemInfo[$i]->COPY . "',
-    '" . $json_lenovo->ItemInfo[$i]->ITEMCLASSNAME . "',
-    '" . $json_lenovo->ItemInfo[$i]->ITEMSTATUSNAME . "',
-    '" . $json_lenovo->ItemInfo[$i]->LOCATIONINITIAL . "',
-    '" . $json_lenovo->ItemInfo[$i]->UNIT . "')";
-    if ($DATABASE->query($query) === FALSE) {
-        echo '{
-            "status": "error"
-        }';
-        exit;
-    }
-}
-for ($i = 0; $i < count($json_apple->ItemInfo); $i++) {
-    $query = "INSERT INTO `devices`
-    (
-        `FAVORITE`,
-     `UNLOCKDEVICE`,
-     `IMAGE`,
-     `DEVICENAME`,
-     `ACCESSIONNO`,
-     `BARCODE`,
-     `CALLNO`,
-     `COLLECTIONNAME`,
-     `COPY`,
-     `ITEMCLASSNAME`,
-     `ITEMSTATUSNAME`,
-     `LOCATIONINITIAL`,
-     `UNIT`) 
-    VALUES (
-    0,
-    0,
-    'assets/images/applePen.png',
-    'Apple Pencil gen 1',
-    '" . $json_apple->ItemInfo[$i]->ACCESSIONNO . "',
-    '" . $json_apple->ItemInfo[$i]->BARCODE . "',
-    '" . $json_apple->ItemInfo[$i]->CALLNO . "',
-    '" . $json_apple->ItemInfo[$i]->COLLECTIONNAME . "',
-    '" . $json_apple->ItemInfo[$i]->COPY . "',
-    '" . $json_apple->ItemInfo[$i]->ITEMCLASSNAME . "',
-    '" . $json_apple->ItemInfo[$i]->ITEMSTATUSNAME . "',
-    '" . $json_apple->ItemInfo[$i]->LOCATIONINITIAL . "',
-    '" . $json_apple->ItemInfo[$i]->UNIT . "')";
-    if ($DATABASE->query($query) === FALSE) {
-        echo '{
-            "status": "error"
-        }';
-        exit;
-    }
-}
-
-echo '{ 
-    "status": "success"
-}';
