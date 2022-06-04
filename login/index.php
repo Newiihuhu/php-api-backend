@@ -2,33 +2,21 @@
 require("../database.php");
 
 $email = isset($_GET['email']) ? $_GET['email'] : '';
-$password = isset($_GET['password']) ? $_GET['password'] : '';
 
-$query = "SELECT * FROM `account` WHERE `email` = '".$email."' AND `password` = '".$password."' ";
+$query = "SELECT * FROM `account` WHERE `email` = '" . $email . "'";
 
 $result = $DATABASE->query($query);
 $row = $result->fetch_assoc();
 $data = '{
-    "id": "' . $row['id']. '",
-    "email": "' . $row['email']. '",
-    "password": "' . $row['password']. '",
-    "name": "' . $row['name']. '",
-    "phoneNo": "' . $row['phone_number']. '",
-    "access": "' . $row['access']. '",
-    "status": "' . $row['status']. '" 
+    "email": "' . $row['email'] . '",
+    "name": "' . $row['name'] . '"
 }';
 
-    if ($DATABASE->query($query) === FALSE) {
-        echo '{
+if ($DATABASE->query($query) === FALSE) {
+    echo '{
             "status": "error"
         }';
-        exit;
-    } else {
-        echo $data 
-            
-    ;
-    }
-
-
-
-
+    exit;
+} else {
+    echo $data;
+}
