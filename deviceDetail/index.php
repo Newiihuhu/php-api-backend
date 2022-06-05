@@ -3,7 +3,7 @@ header('Content-Type: application/json ; charset=utf-8');
 require("../database.php");
 $device_name = isset($_GET['device']) ? $_GET['device'] : '';
 
-$query = "SELECT d.DEVICENAME, d.FAVORITE, d.LOCATIONINITIAL, COUNT(d.LOCATIONINITIAL) as COUNTLOCATION, ln.THNAME, da.DURATION, da.ACCESSION 
+$query = "SELECT d.DEVICENAME, d.FAVORITE, d.LOCATIONINITIAL, COUNT(d.LOCATIONINITIAL) as COUNTLOCATION, ln.THNAME, da.DURATION, da.ACCESSION, ln.COLORCODE
             FROM `devices` as d 
             INNER JOIN `location_name` as ln 
             ON d.LOCATIONINITIAL = ln.SHORTNAME 
@@ -31,14 +31,16 @@ while ($row2 = $result2->fetch_array()) {
         $second_data .= '{
                 "shortName": "' . $row2['LOCATIONINITIAL'] . '",
                 "locationName": "' . $row2['THNAME'] . '",
-                "count": "' . $row2['COUNTLOCATION'] . '"
+                "count": "' . $row2['COUNTLOCATION'] . '",
+                "colorCode": "' . $row2['COLORCODE'] . '"
             },';
     }
     if ($row2['THNAME'] !== "หอสมุดกลาง") {
         $third_data .= '{
                 "shortName": "' . $row2['LOCATIONINITIAL'] . '",
                 "locationName": "' . $row2['THNAME'] . '",
-                "count": "' . $row2['COUNTLOCATION'] . '"
+                "count": "' . $row2['COUNTLOCATION'] . '",
+                "colorCode": "' . $row2['COLORCODE'] . '"
             },';
     }
 }
