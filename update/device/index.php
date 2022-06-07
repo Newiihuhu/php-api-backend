@@ -13,8 +13,12 @@ $query = "UPDATE `devices_on_app`
             `ACCESSION`='" . $accession . "',
             `DURATION`='" . $duration . "' 
             WHERE `BIBID` = '" . $bib_id . "'";
+$query1 = "UPDATE `devices` 
+            SET `DEVICENAME`='" . $device_name . "' 
+            WHERE `BIBID` = '" . $bib_id . "'";
 
 $result = $DATABASE->query($query);
+$result1 = $DATABASE->query($query1);
 echo '{
     "status": "update success"
 }';

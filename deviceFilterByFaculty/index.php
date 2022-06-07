@@ -3,7 +3,7 @@ header('Content-Type: application/json ; charset=utf-8');
 require("../database.php");
 $faculty_name = isset($_GET['faculty']) ? $_GET['faculty'] : '';
 
-$query = "SELECT d.DEVICENAME, d.FAVORITE, d.IMAGE, da.DURATION COUNT(d.ITEMSTATUSNAME) as TOTALAVAILABLE
+$query = "SELECT d.DEVICENAME, d.FAVORITE, d.IMAGE, da.DURATION, COUNT(d.ITEMSTATUSNAME) as TOTALAVAILABLE
             FROM `devices` as d 
             INNER JOIN `location_name` as ln 
             ON ln.SHORTNAME = d.LOCATIONINITIAL

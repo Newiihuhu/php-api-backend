@@ -1,5 +1,7 @@
 <?php
 require("../database.php");
+$bib_id = isset($_GET['bib_id']) ? $_GET['bib_id'] : '';
+$device_name = isset($_GET['device_name']) ? $_GET['device_name'] : '';
 
 function get_data($url)
 {
@@ -19,20 +21,15 @@ function get_data($url)
     return $resp;
 }
 
-$clear = "DELETE FROM `devices`";
-$clear_result = $DATABASE->query($clear);
-$get_bib_id_and_name = "SELECT * FROM `devices_on_app`";
-$result = $DATABASE->query($get_bib_id_and_name);
-while ($row = $result->fetch_array()) {
-    $url = "https://opac.kku.ac.th/v2/api/GetItem/" . $row['BIBID'];
-    $url_image = "https://opac.kku.ac.th/v2/api/GetBookCover/" . $row['BIBID'];
-    $response = get_data($url);
-    $response_image = get_data($url_image);
-    $json = json_decode($response);
-    $json_image = json_decode($response_image);
+$url = "https://opac.kku.ac.th/v2/api/GetItem/" . $bib_id;
+$url_image = "https://opac.kku.ac.th/v2/api/GetBookCover/" . $bib_id;
+$response = get_data($url);
+$response_image = get_data($url_image);
+$json = json_decode($response);
+$json_image = json_decode($response_image);
 
-    for ($i = 0; $i < count($json->ItemInfo); $i++) {
-        $query = "INSERT INTO `devices`
+for ($i = 0; $i < count($json->ItemInfo); $i++) {
+    $query = "INSERT INTO `devices`
     (
         `BIBID`,
      `FAVORITE`,
@@ -48,10 +45,10 @@ while ($row = $result->fetch_array()) {
      `LOCATIONINITIAL`,
      `UNIT`) 
     VALUES (
-        '" . $row['BIBID'] . "',
+        '" . $bib_id . "',
     0,
     '" . $json_image . "',
-    '" . $row['DEVICENAME'] . "',
+    '" . $device_name . "',
     '" . $json->ItemInfo[$i]->ACCESSIONNO . "',
     '" . $json->ItemInfo[$i]->BARCODE . "',
     '" . $json->ItemInfo[$i]->CALLNO . "',
@@ -61,11 +58,11 @@ while ($row = $result->fetch_array()) {
     '" . $json->ItemInfo[$i]->ITEMSTATUSNAME . "',
     '" . $json->ItemInfo[$i]->LOCATIONINITIAL . "',
     '" . $json->ItemInfo[$i]->UNIT . "')";
-        if ($DATABASE->query($query) === FALSE) {
-            echo '{
+    if ($DATABASE->query($query) === FALSE) {
+        echo '{
             "status": "error"
         }';
-            exit;
-        }
+        exit;
     }
 }
+// }
