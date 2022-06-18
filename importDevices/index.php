@@ -23,8 +23,10 @@ function get_data($url)
 
 $url = "https://opac.kku.ac.th/v2/api/GetItem/" . $bib_id;
 $url_image = "https://opac.kku.ac.th/v2/api/GetBookCover/" . $bib_id;
+
 $response = get_data($url);
 $response_image = get_data($url_image);
+
 $json = json_decode($response);
 $json_image = json_decode($response_image);
 

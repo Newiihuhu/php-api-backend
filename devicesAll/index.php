@@ -2,12 +2,11 @@
 header('Content-Type: application/json ; charset=utf-8');
 require("../database.php");
 
-$query = 'SELECT da.DURATION as DURATION, d.IMAGE as IMAGE, da.BIBID as BIBID, da.ACCESSION as ACCESSION, da.DEVICENAME as DEVICENAME, da.UNLOCKDEVICE as UNLOCKDEVICE
+$query = 'SELECT DISTINCT da.DURATION as DURATION, d.IMAGE as IMAGE, da.BIBID as BIBID, da.ACCESSION as ACCESSION, da.DEVICENAME as DEVICENAME, da.UNLOCKDEVICE as UNLOCKDEVICE
             FROM `devices` as d 
             INNER JOIN `devices_on_app` as da
             ON d.DEVICENAME = da.DEVICENAME
-            WHERE `ITEMSTATUSNAME` = "Available"
-            GROUP BY `DEVICENAME`';
+            WHERE `ITEMSTATUSNAME` = "Available"';
 $result = $DATABASE->query($query);
 $data = "";
 while ($row = $result->fetch_array()) {
